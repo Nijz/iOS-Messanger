@@ -9,9 +9,7 @@ import SwiftUI
 
 struct RegistrationView: View {
     
-    @State private var email = ""
-    @State private var password = ""
-    @State private var fullname = ""
+    @StateObject var registrationViewModel = RegistrationViewModel()
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -29,22 +27,26 @@ struct RegistrationView: View {
             // inout fields
             VStack(spacing: 12){
                 
-                InputFieldView(inputValue: $email,
+                InputFieldView(inputValue: $registrationViewModel.email,
                                placeholder: "example@gmail.com")
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 
-                InputFieldView(inputValue: $fullname,
+                InputFieldView(inputValue: $registrationViewModel.fullname,
                                placeholder: "Enter your full name")
                 
-                InputFieldView(inputValue: $password,
+                InputFieldView(inputValue: $registrationViewModel.password,
                                placeholder: "enter your password",
                                isSecure: true)
                 
                 
             }
             
-            Button(action: {}, label: {
+            Button(action: {
+                Task{
+                    try await registrationViewModel.createUser()
+                }
+            }, label: {
                 Text("Create Account")
                     .font(.subheadline)
                     .fontWeight(.semibold)
